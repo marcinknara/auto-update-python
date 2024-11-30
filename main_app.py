@@ -52,6 +52,6 @@ settings_menu.add_command(label="Check for Updates", command=check_for_updates)
 menubar.add_cascade(label="Settings", menu=settings_menu)
 root.config(menu=menubar)
 
-tk.Label(root, text="Welcome to the Minimal Updater App!").pack(pady=20)
+tk.Label(root, text="Welcome to the Minimal Updater App! v1.0.3").pack(pady=20)
 root.geometry("400x200")
 root.mainloop()
