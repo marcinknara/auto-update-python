@@ -7,20 +7,18 @@ from tkinter import messagebox
 import sys
 
 # Determine the base path of the application
-if getattr(sys, 'frozen', False):
-    BASE_PATH = sys._MEIPASS  # For PyInstaller builds
-else:
-    BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Paths for local version file and updater executable
 LOCAL_VERSION_FILE = os.path.join(BASE_PATH, "version.json")
-GITHUB_VERSION_URL = "https://raw.githubusercontent.com/marcinknara/auto-update-python/main/version.json"
 
 # Path to the updater executable
 if sys.platform == "win32":
-    UPDATER_EXECUTABLE = os.path.join(BASE_PATH, "update_manager.exe")
+    UPDATER_EXECUTABLE = os.path.join(BASE_PATH, "..", "update_manager", "update_manager.exe")
 else:
-    UPDATER_EXECUTABLE = os.path.join(BASE_PATH, "update_manager")
+    UPDATER_EXECUTABLE = os.path.join(BASE_PATH, "..", "update_manager", "update_manager")
+
+GITHUB_VERSION_URL = "https://raw.githubusercontent.com/marcinknara/auto-update-python/main/version.json"
 
 def check_for_updates():
     try:
@@ -36,7 +34,6 @@ def check_for_updates():
         # Compare versions and trigger the updater if needed
         if remote_version > local_version:
             if messagebox.askyesno("Update Available", "A new version is available. Update now?"):
-                # Launch the updater executable
                 subprocess.Popen([UPDATER_EXECUTABLE])
                 root.destroy()  # Close the main application
         else:
@@ -55,6 +52,6 @@ settings_menu.add_command(label="Check for Updates", command=check_for_updates)
 menubar.add_cascade(label="Settings", menu=settings_menu)
 root.config(menu=menubar)
 
-tk.Label(root, text="Welcome to the Minimal Updater App! v1.0.2").pack(pady=20)
+tk.Label(root, text="Welcome to the Minimal Updater App!").pack(pady=20)
 root.geometry("400x200")
 root.mainloop()
