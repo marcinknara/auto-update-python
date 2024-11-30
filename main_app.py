@@ -4,34 +4,36 @@ import requests
 import subprocess
 import tkinter as tk
 from tkinter import messagebox
+import sys
 
-# Local version file and update manager script
-LOCAL_VERSION_FILE = "version.json"
+if getattr(sys, 'frozen', False):
+    BASE_PATH = sys._MEIPASS  # For PyInstaller builds
+else:
+    BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+LOCAL_VERSION_FILE = os.path.join(BASE_PATH, "version.json")
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/marcinknara/auto-update-python/main/version.json"
-UPDATER_SCRIPT = "update_manager.py"
+UPDATER_SCRIPT = os.path.join(BASE_PATH, "update_manager.py")
 
 def check_for_updates():
     try:
-        # Fetch the latest version from GitHub
         response = requests.get(GITHUB_VERSION_URL)
         response.raise_for_status()
         remote_version = response.json()["version"]
 
-        # Read the local version
         with open(LOCAL_VERSION_FILE, "r") as file:
             local_version = json.load(file)["version"]
 
         if remote_version > local_version:
             if messagebox.askyesno("Update Available", "A new version is available. Update now?"):
                 subprocess.Popen(["python", UPDATER_SCRIPT, remote_version])
-                root.destroy()  # Close the main app
+                root.destroy()
         else:
             messagebox.showinfo("Up-to-date", "You are already running the latest version.")
 
     except Exception as e:
         messagebox.showerror("Error", f"Failed to check for updates: {e}")
 
-# Main application GUI
 root = tk.Tk()
 root.title("Minimal Updater App")
 
